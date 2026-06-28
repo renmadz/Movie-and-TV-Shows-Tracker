@@ -1,0 +1,205 @@
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-dim);
+  border-left: 2px solid var(--border);
+  border-radius: 5px;
+  padding: 0.75rem 0.875rem;
+  position: relative;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+.card:hover {
+  border-left-color: var(--accent);
+  box-shadow: -2px 0 8px rgba(56, 189, 248, 0.2), inset 0 0 30px rgba(56, 189, 248, 0.02);
+}
+
+/* Poster */
+.posterWrap {
+  flex-shrink: 0;
+  width: 54px;
+  height: 81px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+}
+
+.poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.posterFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fallbackLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.55rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  writing-mode: vertical-rl;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-right: 2.25rem;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.badge {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 0.1rem 0.4rem;
+  border-radius: 2px;
+  letter-spacing: 0.08em;
+}
+.badgeMovie {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+.badgeTv {
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+}
+
+.statusBadge {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 0.1rem 0.4rem;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+}
+.statusWatched  { background: var(--green-dim);  color: var(--green);  border: 1px solid rgba(52,211,153,0.2); }
+.statusWatching { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(56,189,248,0.2); }
+.statusPlan     { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(251,191,36,0.2); }
+.statusDropped  { background: var(--red-dim);    color: var(--red);    border: 1px solid rgba(248,113,113,0.2); }
+
+.rating {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--yellow);
+  margin-left: auto;
+  letter-spacing: 0.03em;
+}
+
+.title {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+}
+
+.season {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.seasonTotal {
+  color: var(--text-dim);
+}
+
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.genre {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  padding: 0.08rem 0.4rem;
+  border-radius: 2px;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.date {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+
+.notes {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Actions */
+.actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.editBtn,
+.deleteBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+}
+
+.editBtn {
+  color: var(--text-dim);
+}
+.editBtn:hover {
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.deleteBtn {
+  color: var(--text-dim);
+}
+.deleteBtn:hover {
+  color: var(--red);
+  background: var(--red-dim);
+}

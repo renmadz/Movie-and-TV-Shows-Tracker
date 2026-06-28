@@ -1,0 +1,33 @@
+{
+  "name": "tracker-backend",
+  "version": "1.0.0",
+  "description": "Backend for Movie and TV Shows Tracker",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "6.9.0",
+    "cors": "2.8.5",
+    "express": "4.21.2",
+    "dotenv": "16.5.0"
+  },
+  "devDependencies": {
+    "@types/cors": "2.8.17",
+    "@types/express": "4.17.21",
+    "@types/node": "22.15.3",
+    "prisma": "6.9.0",
+    "ts-node-dev": "2.0.0",
+    "typescript": "5.8.3"
+  },
+  "allowScripts": {
+    "@prisma/client@6.9.0": true,
+    "@prisma/engines@6.9.0": true,
+    "prisma@6.9.0": true
+  }
+}

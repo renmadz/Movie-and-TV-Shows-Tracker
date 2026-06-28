@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Entry {
+  id             Int      @id @default(autoincrement())
+  title          String
+  type           Type
+  status         Status   @default(WATCHED)
+  rating         Float?
+  genre          String?
+  notes          String?
+  posterPath     String?
+  seasonNumber   Int?
+  totalSeasons   Int?
+  watchedAt      DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+enum Type {
+  MOVIE
+  TV_SHOW
+}
+
+enum Status {
+  WATCHING
+  WATCHED
+  PLAN_TO_WATCH
+  DROPPED
+}

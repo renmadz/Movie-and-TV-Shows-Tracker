@@ -1,4 +1,4 @@
-import { Trash2, Pencil } from 'lucide-react';
+import { Trash2, Pencil, RefreshCw, History } from 'lucide-react';
 import type { Entry, WatchStatus } from '../types';
 import { deleteEntry } from '../api/entries';
 import { TMDB_IMAGE_BASE } from '../api/tmdb';
@@ -8,6 +8,8 @@ interface EntryCardProps {
   entry: Entry;
   onDeleted: (id: number) => void;
   onEdit: (entry: Entry) => void;
+  onRewatch: (entry: Entry) => void;
+  onHistory: (entry: Entry) => void;
 }
 
 const STATUS_LABELS: Record<WatchStatus, string> = {
@@ -24,7 +26,7 @@ const STATUS_CLASS: Record<WatchStatus, string> = {
   DROPPED:       'statusDropped',
 };
 
-export default function EntryCard({ entry, onDeleted, onEdit }: EntryCardProps) {
+export default function EntryCard({ entry, onDeleted, onEdit, onRewatch, onHistory }: EntryCardProps) {
   const handleDelete = async () => {
     if (!confirm(`Delete "${entry.title}"?`)) return;
     try {
@@ -42,6 +44,8 @@ export default function EntryCard({ entry, onDeleted, onEdit }: EntryCardProps) 
   const genres = entry.genre
     ? entry.genre.split(',').map((g) => g.trim()).filter(Boolean)
     : [];
+
+  const rewatchCount = entry.rewatches?.length ?? 0;
 
   return (
     <article className={styles.card}>
@@ -96,7 +100,19 @@ export default function EntryCard({ entry, onDeleted, onEdit }: EntryCardProps) 
           </div>
         )}
 
-        <span className={styles.date}>{formattedDate}</span>
+        <div className={styles.bottomRow}>
+          <span className={styles.date}>{formattedDate}</span>
+          {rewatchCount > 0 && (
+            <button
+              className={styles.rewatchCount}
+              onClick={() => onHistory(entry)}
+              title="View history"
+            >
+              <RefreshCw size={10} strokeWidth={2} />
+              {rewatchCount}x
+            </button>
+          )}
+        </div>
 
         {entry.notes && <p className={styles.notes}>{entry.notes}</p>}
       </div>
@@ -104,7 +120,23 @@ export default function EntryCard({ entry, onDeleted, onEdit }: EntryCardProps) 
       {/* Actions */}
       <div className={styles.actions}>
         <button
-          className={styles.editBtn}
+          className={styles.actionBtn}
+          onClick={() => onHistory(entry)}
+          aria-label={`History for ${entry.title}`}
+          title="History"
+        >
+          <History size={13} strokeWidth={1.5} />
+        </button>
+        <button
+          className={styles.actionBtn}
+          onClick={() => onRewatch(entry)}
+          aria-label={`Log rewatch of ${entry.title}`}
+          title="Log rewatch"
+        >
+          <RefreshCw size={13} strokeWidth={1.5} />
+        </button>
+        <button
+          className={styles.actionBtn}
           onClick={() => onEdit(entry)}
           aria-label={`Edit ${entry.title}`}
           title="Edit"
@@ -112,7 +144,7 @@ export default function EntryCard({ entry, onDeleted, onEdit }: EntryCardProps) 
           <Pencil size={13} strokeWidth={1.5} />
         </button>
         <button
-          className={styles.deleteBtn}
+          className={`${styles.actionBtn} ${styles.deleteBtn}`}
           onClick={handleDelete}
           aria-label={`Delete ${entry.title}`}
           title="Delete"

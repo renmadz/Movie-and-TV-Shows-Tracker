@@ -300,12 +300,43 @@ select.input option { background: var(--bg-surface); }
   font-weight: 600;
 }
 
-/* Error */
+/* Error / duplicate block */
+.errorBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--red-dim);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 4px;
+  padding: 0.6rem 0.75rem;
+}
+
 .error {
   color: var(--red);
   font-size: 0.78rem;
   margin: 0;
   font-family: 'Share Tech Mono', monospace;
+}
+
+.rewatchPromptBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: 1px solid var(--purple);
+  color: var(--purple);
+  border-radius: 4px;
+  padding: 0.4rem 0.75rem;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background 0.15s;
+}
+.rewatchPromptBtn:hover {
+  background: var(--purple-dim);
 }
 
 /* Actions */

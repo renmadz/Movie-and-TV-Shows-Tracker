@@ -8,19 +8,30 @@ datasource db {
 }
 
 model Entry {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   title          String
   type           Type
-  status         Status   @default(WATCHED)
+  status         Status    @default(WATCHED)
   rating         Float?
   genre          String?
   notes          String?
   posterPath     String?
   seasonNumber   Int?
   totalSeasons   Int?
-  watchedAt      DateTime @default(now())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  watchedAt      DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  rewatches      Rewatch[]
+}
+
+model Rewatch {
+  id          Int      @id @default(autoincrement())
+  entryId     Int
+  entry       Entry    @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  watchedAt   DateTime @default(now())
+  rating      Float?
+  notes       String?
+  createdAt   DateTime @default(now())
 }
 
 enum Type {

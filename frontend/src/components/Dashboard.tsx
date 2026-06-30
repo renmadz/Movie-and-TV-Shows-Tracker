@@ -1,9 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Film, Tv, PlusCircle, SlidersHorizontal, Clapperboard } from 'lucide-react';
-import type { Entry, EntryType, WatchStatus, SortOption, EntryFormData } from '../types';
-import { fetchEntries, createEntry, createEntries, updateEntry } from '../api/entries';
+import type { Entry, EntryType, WatchStatus, SortOption, EntryFormData, RewatchFormData } from '../types';
+import { fetchEntries, createEntry, createEntries, updateEntry, addRewatch } from '../api/entries';
 import EntryCard from './EntryCard';
 import AddEntryModal from './AddEntryModal';
+import RewatchModal from './RewatchModal';
+import HistoryPanel from './HistoryPanel';
 import styles from './Dashboard.module.css';
 
 type TypeFilter = 'ALL' | EntryType;
@@ -34,8 +36,10 @@ export default function Dashboard() {
   const [statusTab, setStatusTab]   = useState<WatchStatus | 'ALL'>('ALL');
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('ALL');
   const [sort, setSort]             = useState<SortOption>('watched_desc');
-  const [showModal, setShowModal]   = useState(false);
-  const [editingEntry, setEditingEntry] = useState<Entry | null>(null);
+  const [showModal, setShowModal]         = useState(false);
+  const [editingEntry, setEditingEntry]   = useState<Entry | null>(null);
+  const [rewatchEntry, setRewatchEntry]   = useState<Entry | null>(null);
+  const [historyEntry, setHistoryEntry]   = useState<Entry | null>(null);
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState('');
 
@@ -76,6 +80,23 @@ export default function Dashboard() {
 
   const handleEdit = (entry: Entry) => {
     setEditingEntry(entry);
+  };
+
+  const handleRewatch = (entry: Entry) => {
+    setRewatchEntry(entry);
+  };
+
+  // Called from AddEntryModal when a duplicate is detected — opens rewatch modal for the existing entry
+  const handleRewatchExisting = (existingId: number) => {
+    const existing = allEntries.find((e) => e.id === existingId) ?? null;
+    if (existing) setRewatchEntry(existing);
+  };
+
+  const handleRewatchSubmit = async (data: RewatchFormData) => {
+    if (!rewatchEntry) return;
+    await addRewatch(rewatchEntry.id, data);
+    await loadEntries();
+    await loadAllEntries();
   };
 
   const handleUpdate = async (data: EntryFormData) => {
@@ -182,7 +203,13 @@ export default function Dashboard() {
               <ul className={styles.list}>
                 {entries.map((entry) => (
                   <li key={entry.id}>
-                    <EntryCard entry={entry} onDeleted={handleDeleted} onEdit={handleEdit} />
+                    <EntryCard
+                      entry={entry}
+                      onDeleted={handleDeleted}
+                      onEdit={handleEdit}
+                      onRewatch={handleRewatch}
+                      onHistory={(e) => setHistoryEntry(e)}
+                    />
                   </li>
                 ))}
               </ul>
@@ -255,6 +282,7 @@ export default function Dashboard() {
           onClose={() => setShowModal(false)}
           onSubmit={handleAdd}
           onSubmitBulk={handleBulkAdd}
+          onRewatchExisting={handleRewatchExisting}
         />
       )}
 
@@ -275,6 +303,22 @@ export default function Dashboard() {
           }}
           onClose={() => setEditingEntry(null)}
           onSubmit={handleUpdate}
+        />
+      )}
+
+      {rewatchEntry && (
+        <RewatchModal
+          entry={rewatchEntry}
+          onClose={() => setRewatchEntry(null)}
+          onSubmit={handleRewatchSubmit}
+        />
+      )}
+
+      {historyEntry && (
+        <HistoryPanel
+          entry={historyEntry}
+          onClose={() => setHistoryEntry(null)}
+          onRewatchDeleted={loadEntries}
         />
       )}
     </div>

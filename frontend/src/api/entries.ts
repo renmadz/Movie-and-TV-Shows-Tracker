@@ -1,6 +1,15 @@
-import type { Entry, EntryFormData, EntryType, WatchStatus, SortOption } from '../types';
+import type { Entry, EntryFormData, EntryType, WatchStatus, SortOption, Rewatch, RewatchFormData } from '../types';
 
 const BASE_URL = 'http://localhost:3001/api';
+
+export class DuplicateError extends Error {
+  existingId: number;
+  constructor(message: string, existingId: number) {
+    super(message);
+    this.name = 'DuplicateError';
+    this.existingId = existingId;
+  }
+}
 
 export async function fetchEntries(
   type?: EntryType | 'ALL',
@@ -22,6 +31,12 @@ export async function createEntry(data: EntryFormData): Promise<Entry> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(serializeForm(data)),
   });
+
+  if (res.status === 409) {
+    const body = await res.json();
+    throw new DuplicateError(body.message, body.existingId);
+  }
+
   if (!res.ok) throw new Error('Failed to create entry');
   return res.json();
 }
@@ -51,13 +66,41 @@ export async function deleteEntry(id: number): Promise<void> {
   if (!res.ok) throw new Error('Failed to delete entry');
 }
 
-// Shared serializer — converts string form values to proper types for the API
+// ── Rewatch API ──
+
+export async function fetchRewatches(entryId: number): Promise<Rewatch[]> {
+  const res = await fetch(`${BASE_URL}/entries/${entryId}/rewatches`);
+  if (!res.ok) throw new Error('Failed to fetch rewatches');
+  return res.json();
+}
+
+export async function addRewatch(entryId: number, data: RewatchFormData): Promise<Rewatch> {
+  const res = await fetch(`${BASE_URL}/entries/${entryId}/rewatches`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      watchedAt: data.watchedAt,
+      rating: data.rating !== '' ? parseFloat(data.rating) : null,
+      notes: data.notes || null,
+    }),
+  });
+  if (!res.ok) throw new Error('Failed to add rewatch');
+  return res.json();
+}
+
+export async function deleteRewatch(entryId: number, rewatchId: number): Promise<void> {
+  const res = await fetch(`${BASE_URL}/entries/${entryId}/rewatches/${rewatchId}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Failed to delete rewatch');
+}
+
 function serializeForm(data: Partial<EntryFormData>) {
   return {
     ...data,
-    rating:       data.rating       !== '' ? parseFloat(data.rating ?? '')       : null,
-    seasonNumber: data.seasonNumber !== '' ? parseInt(data.seasonNumber ?? '')   : null,
-    totalSeasons: data.totalSeasons !== '' ? parseInt(data.totalSeasons ?? '')   : null,
+    rating:       data.rating       !== '' ? parseFloat(data.rating ?? '')     : null,
+    seasonNumber: data.seasonNumber !== '' ? parseInt(data.seasonNumber ?? '')  : null,
+    totalSeasons: data.totalSeasons !== '' ? parseInt(data.totalSeasons ?? '')  : null,
     posterPath:   data.posterPath || null,
   };
 }

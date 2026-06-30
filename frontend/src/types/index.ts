@@ -8,6 +8,15 @@ export type SortOption =
   | 'rating_desc'
   | 'rating_asc';
 
+export interface Rewatch {
+  id: number;
+  entryId: number;
+  watchedAt: string;
+  rating: number | null;
+  notes: string | null;
+  createdAt: string;
+}
+
 export interface Entry {
   id: number;
   title: string;
@@ -22,6 +31,7 @@ export interface Entry {
   watchedAt: string;
   createdAt: string;
   updatedAt: string;
+  rewatches: Rewatch[];
 }
 
 export interface EntryFormData {
@@ -35,4 +45,10 @@ export interface EntryFormData {
   posterPath: string;
   seasonNumber: string;
   totalSeasons: string;
+}
+
+export interface RewatchFormData {
+  watchedAt: string;
+  rating: string;
+  notes: string;
 }

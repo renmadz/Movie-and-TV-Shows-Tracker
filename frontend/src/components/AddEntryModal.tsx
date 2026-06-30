@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, Film, Tv } from 'lucide-react';
+import { X, Film, Tv, RefreshCw } from 'lucide-react';
 import type { EntryFormData, EntryType, WatchStatus } from '../types';
 import { searchTmdb, getGenreMap, getTvSeasonCount, TMDB_IMAGE_BASE, type TmdbResult } from '../api/tmdb';
+import { DuplicateError } from '../api/entries';
 import styles from './AddEntryModal.module.css';
 
 interface Props {
   onClose: () => void;
   onSubmit: (data: EntryFormData) => Promise<void>;
   onSubmitBulk?: (entries: EntryFormData[]) => Promise<void>;
+  onRewatchExisting?: (existingId: number) => void;
   initialData?: EntryFormData;
   mode?: 'add' | 'edit';
 }
@@ -32,10 +34,11 @@ const STATUS_OPTIONS: { value: WatchStatus; label: string }[] = [
   { value: 'DROPPED',       label: 'Dropped' },
 ];
 
-export default function AddEntryModal({ onClose, onSubmit, onSubmitBulk, initialData, mode = 'add' }: Props) {
+export default function AddEntryModal({ onClose, onSubmit, onSubmitBulk, onRewatchExisting, initialData, mode = 'add' }: Props) {
   const [form, setForm]               = useState<EntryFormData>(initialData ?? defaultForm);
   const [loading, setLoading]         = useState(false);
   const [error, setError]             = useState('');
+  const [duplicateId, setDuplicateId] = useState<number | null>(null);
   const [suggestions, setSuggestions] = useState<TmdbResult[]>([]);
   const [searching, setSearching]     = useState(false);
   const [showSugg, setShowSugg]       = useState(false);
@@ -107,7 +110,7 @@ export default function AddEntryModal({ onClose, onSubmit, onSubmitBulk, initial
       setError('Season number must be a positive number.'); return;
     }
 
-    setLoading(true); setError('');
+    setLoading(true); setError(''); setDuplicateId(null);
     try {
       await onSubmit(form);
 
@@ -127,8 +130,13 @@ export default function AddEntryModal({ onClose, onSubmit, onSubmitBulk, initial
       }
 
       onClose();
-    } catch {
-      setError('Something went wrong. Please try again.');
+    } catch (err) {
+      if (err instanceof DuplicateError) {
+        setDuplicateId(err.existingId);
+        setError('This title is already in your list.');
+      } else {
+        setError('Something went wrong. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -307,7 +315,21 @@ export default function AddEntryModal({ onClose, onSubmit, onSubmitBulk, initial
               className={`${styles.input} ${styles.textarea}`} />
           </div>
 
-          {error && <p className={styles.error} role="alert">{error}</p>}
+          {error && (
+            <div className={styles.errorBlock} role="alert">
+              <p className={styles.error}>{error}</p>
+              {duplicateId != null && onRewatchExisting && (
+                <button
+                  type="button"
+                  className={styles.rewatchPromptBtn}
+                  onClick={() => { onRewatchExisting(duplicateId); onClose(); }}
+                >
+                  <RefreshCw size={13} strokeWidth={1.5} />
+                  Log as a rewatch instead
+                </button>
+              )}
+            </div>
+          )}
 
           <div className={styles.actions}>
             <button type="button" className={styles.cancelBtn} onClick={onClose}>CANCEL</button>

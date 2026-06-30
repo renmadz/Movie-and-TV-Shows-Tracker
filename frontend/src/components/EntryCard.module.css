@@ -26,14 +26,12 @@
   background: var(--bg-surface);
   border: 1px solid var(--border);
 }
-
 .poster {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-
 .posterFallback {
   width: 100%;
   height: 100%;
@@ -41,7 +39,6 @@
   align-items: center;
   justify-content: center;
 }
-
 .fallbackLabel {
   font-family: 'Share Tech Mono', monospace;
   font-size: 0.55rem;
@@ -57,7 +54,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
-  padding-right: 2.25rem;
+  /* leave room for the action column */
+  padding-right: 0.25rem;
 }
 
 .topRow {
@@ -126,10 +124,7 @@
   color: var(--accent);
   letter-spacing: 0.05em;
 }
-
-.seasonTotal {
-  color: var(--text-dim);
-}
+.seasonTotal { color: var(--text-dim); }
 
 .genres {
   display: flex;
@@ -147,12 +142,34 @@
   letter-spacing: 0.02em;
 }
 
+.bottomRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .date {
   font-family: 'Share Tech Mono', monospace;
   font-size: 0.65rem;
   color: var(--text-dim);
   letter-spacing: 0.04em;
 }
+
+.rewatchCount {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--purple);
+  background: var(--purple-dim);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 999px;
+  padding: 0.08rem 0.4rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.rewatchCount:hover { background: rgba(167, 139, 250, 0.2); }
 
 .notes {
   font-size: 0.75rem;
@@ -165,20 +182,19 @@
   overflow: hidden;
 }
 
-/* Actions */
+/* Action column */
 .actions {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
+  padding-top: 0.1rem;
 }
 
-.editBtn,
-.deleteBtn {
+.actionBtn {
   background: none;
   border: none;
+  color: var(--text-dim);
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 3px;
@@ -187,19 +203,12 @@
   justify-content: center;
   transition: color 0.15s, background 0.15s;
 }
-
-.editBtn {
-  color: var(--text-dim);
-}
-.editBtn:hover {
+.actionBtn:hover {
   color: var(--accent);
   background: var(--accent-dim);
 }
 
-.deleteBtn {
-  color: var(--text-dim);
-}
 .deleteBtn:hover {
-  color: var(--red);
-  background: var(--red-dim);
+  color: var(--red) !important;
+  background: var(--red-dim) !important;
 }

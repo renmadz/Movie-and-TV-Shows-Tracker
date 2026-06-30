@@ -35,7 +35,11 @@ export const getAllEntries = async (req: Request, res: Response): Promise<void> 
       where.status = status;
     }
 
-    const entries = await prisma.entry.findMany({ where, orderBy: getOrderBy(sort) });
+    const entries = await prisma.entry.findMany({
+      where,
+      orderBy: getOrderBy(sort),
+      include: { rewatches: { orderBy: { watchedAt: 'desc' } } },
+    });
     res.json(entries);
   } catch {
     res.status(500).json({ error: 'Failed to fetch entries' });
@@ -49,6 +53,26 @@ export const createEntry = async (req: Request, res: Response): Promise<void> =>
 
     if (!title || !type) {
       res.status(400).json({ error: 'Title and type are required' });
+      return;
+    }
+
+    // Duplicate check — same title + type (case-insensitive), same season if TV
+    const duplicate = await prisma.entry.findFirst({
+      where: {
+        title: { equals: title, mode: 'insensitive' },
+        type,
+        ...(seasonNumber != null && seasonNumber !== ''
+          ? { seasonNumber: parseOptionalInt(seasonNumber) }
+          : {}),
+      },
+    });
+
+    if (duplicate) {
+      res.status(409).json({
+        error: 'DUPLICATE',
+        message: 'An entry with this title already exists.',
+        existingId: duplicate.id,
+      });
       return;
     }
 

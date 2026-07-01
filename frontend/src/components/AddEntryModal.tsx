@@ -45,10 +45,16 @@ export default function AddEntryModal({ onClose, onSubmit, onSubmitBulk, onRewat
   const [addRemaining, setAddRemaining] = useState(false);
   const [tmdbId, setTmdbId]           = useState<number | null>(null);
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const suppressSearch = useRef(false);
 
   // Debounced search
   useEffect(() => {
     if (timeout.current) clearTimeout(timeout.current);
+    // Don't re-search immediately after user picks a suggestion
+    if (suppressSearch.current) {
+      suppressSearch.current = false;
+      return;
+    }
     if (!form.title.trim() || form.title.length < 2) {
       setSuggestions([]); setShowSugg(false); return;
     }
@@ -80,6 +86,11 @@ export default function AddEntryModal({ onClose, onSubmit, onSubmitBulk, onRewat
       setTmdbId(r.id);
     }
 
+    // Suppress the search useEffect that would fire when title changes
+    suppressSearch.current = true;
+    setSuggestions([]);
+    setShowSugg(false);
+
     setForm((p) => ({
       ...p,
       title: r.title || r.name,
@@ -87,7 +98,6 @@ export default function AddEntryModal({ onClose, onSubmit, onSubmitBulk, onRewat
       posterPath: r.poster_path ?? '',
       totalSeasons,
     }));
-    setSuggestions([]); setShowSugg(false);
   };
 
   const handleChange = (

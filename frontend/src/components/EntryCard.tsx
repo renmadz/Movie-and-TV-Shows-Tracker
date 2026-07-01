@@ -26,6 +26,13 @@ const STATUS_CLASS: Record<WatchStatus, string> = {
   DROPPED:       'statusDropped',
 };
 
+const BORDER_CLASS: Record<WatchStatus, string> = {
+  WATCHED:       'borderWatched',
+  WATCHING:      'borderWatching',
+  PLAN_TO_WATCH: 'borderPlan',
+  DROPPED:       'borderDropped',
+};
+
 export default function EntryCard({ entry, onDeleted, onEdit, onRewatch, onHistory }: EntryCardProps) {
   const handleDelete = async () => {
     if (!confirm(`Delete "${entry.title}"?`)) return;
@@ -48,7 +55,7 @@ export default function EntryCard({ entry, onDeleted, onEdit, onRewatch, onHisto
   const rewatchCount = entry.rewatches?.length ?? 0;
 
   return (
-    <article className={styles.card}>
+    <article className={`${styles.card} ${styles[BORDER_CLASS[entry.status]]}`}>
       {/* Poster */}
       <div className={styles.posterWrap}>
         {entry.posterPath ? (
@@ -125,7 +132,7 @@ export default function EntryCard({ entry, onDeleted, onEdit, onRewatch, onHisto
           aria-label={`History for ${entry.title}`}
           title="History"
         >
-          <History size={13} strokeWidth={1.5} />
+          <History size={16} strokeWidth={1.5} />
         </button>
         <button
           className={styles.actionBtn}
@@ -133,7 +140,7 @@ export default function EntryCard({ entry, onDeleted, onEdit, onRewatch, onHisto
           aria-label={`Log rewatch of ${entry.title}`}
           title="Log rewatch"
         >
-          <RefreshCw size={13} strokeWidth={1.5} />
+          <RefreshCw size={16} strokeWidth={1.5} />
         </button>
         <button
           className={styles.actionBtn}
@@ -141,7 +148,7 @@ export default function EntryCard({ entry, onDeleted, onEdit, onRewatch, onHisto
           aria-label={`Edit ${entry.title}`}
           title="Edit"
         >
-          <Pencil size={13} strokeWidth={1.5} />
+          <Pencil size={16} strokeWidth={1.5} />
         </button>
         <button
           className={`${styles.actionBtn} ${styles.deleteBtn}`}
@@ -149,7 +156,7 @@ export default function EntryCard({ entry, onDeleted, onEdit, onRewatch, onHisto
           aria-label={`Delete ${entry.title}`}
           title="Delete"
         >
-          <Trash2 size={13} strokeWidth={1.5} />
+          <Trash2 size={16} strokeWidth={1.5} />
         </button>
       </div>
     </article>

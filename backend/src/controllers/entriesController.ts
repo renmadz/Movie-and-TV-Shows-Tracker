@@ -113,7 +113,7 @@ export const createEntries = async (req: Request, res: Response): Promise<void> 
           data: {
             title: String(e.title),
             type: e.type as 'MOVIE' | 'TV_SHOW',
-            status: (e.status as string) || 'PLAN_TO_WATCH',
+            status: (e.status as 'WATCHING' | 'WATCHED' | 'PLAN_TO_WATCH' | 'DROPPED') || 'PLAN_TO_WATCH',
             rating: parseOptionalFloat(e.rating),
             genre: (e.genre as string) || null,
             notes: (e.notes as string) || null,

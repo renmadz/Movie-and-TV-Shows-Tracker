@@ -43,7 +43,6 @@ export default function AddEntryModal({ onClose, onSubmit, onSubmitBulk, onRewat
   const [searching, setSearching]     = useState(false);
   const [showSugg, setShowSugg]       = useState(false);
   const [addRemaining, setAddRemaining] = useState(false);
-  const [tmdbId, setTmdbId]           = useState<number | null>(null);
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const suppressSearch = useRef(false);
 
@@ -83,7 +82,6 @@ export default function AddEntryModal({ onClose, onSubmit, onSubmitBulk, onRewat
     if (isTv) {
       const count = await getTvSeasonCount(r.id);
       if (count != null) totalSeasons = String(count);
-      setTmdbId(r.id);
     }
 
     // Suppress the search useEffect that would fire when title changes

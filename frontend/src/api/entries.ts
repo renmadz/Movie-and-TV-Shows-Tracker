@@ -1,6 +1,6 @@
 import type { Entry, EntryFormData, EntryType, WatchStatus, SortOption, Rewatch, RewatchFormData } from '../types';
 
-const BASE_URL = 'http://localhost:3001/api';
+const BASE_URL = `${import.meta.env.VITE_API_URL ?? 'http://localhost:3001'}/api`;
 
 export class DuplicateError extends Error {
   existingId: number;

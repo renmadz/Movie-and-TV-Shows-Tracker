@@ -69,7 +69,6 @@ export default function AddEntryModal({ onClose, onSubmit, onSubmitBulk, onRewat
   // Reset season fields when switching type
   const handleTypeSwitch = (t: EntryType) => {
     setForm((p) => ({ ...p, type: t, posterPath: '', genre: '', seasonNumber: '', totalSeasons: '' }));
-    setTmdbId(null);
     setAddRemaining(false);
   };
 

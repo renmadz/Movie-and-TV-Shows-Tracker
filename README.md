@@ -2,7 +2,7 @@
 
 A full-stack movie and TV show tracker with a sci-fi inspired UI. Log what you've watched, track your status, rate entries, and keep a full rewatch history — all powered by TMDB for automatic poster and genre data.
 
-**Live site:** [your-domain.vercel.app](https://aftercredits-db.vercel.app)
+**Live site:** https://aftercredits-db.vercel.app
 
 ---
 
